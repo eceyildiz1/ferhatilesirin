@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ferhat ile Şirin — Yapay Zekayla Çizgi Roman</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c0f06;
+      --parchment: #f0e2c8;
+      --parchment-dark: #e0ceaf;
+      --parchment-deep: #c9b08a;
+      --gold: #b8893a;
+      --gold-light: #d4a855;
+      --rust: #8b3a1c;
+      --brown: #5c2e0e;
+      --brown-mid: #7a4020;
+      --cream: #faf5eb;
+      --shadow: rgba(28, 15, 6, 0.4);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--ink);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── GRAIN OVERLAY ─────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ── SCROLLBAR ─────────────────────── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--ink); }
+    ::-webkit-scrollbar-thumb { background: var(--brown-mid); border-radius: 4px; }
+
+    /* ── NAV ───────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(28,15,6,0.98) 0%, rgba(28,15,6,0.85) 100%);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(184,137,58,0.25);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: var(--gold-light);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--parchment-deep);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold-light); }
+
+    /* ── HERO ──────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, #3d1a08 0%, #1c0f06 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 5 L55 30 L30 55 L5 30Z' fill='none' stroke='%23b8893a' stroke-width='0.3' opacity='0.15'/%3E%3C/svg%3E");
+      background-size: cover, 60px 60px;
+      overflow: hidden;
+    }
+
+    .hero-ornament {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,137,58,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 6s ease-in-out infinite;
+    }
+
+    .hero-ornament:nth-child(2) {
+      width: 800px; height: 800px;
+      animation-delay: 2s;
+      border-color: rgba(184,137,58,0.05);
+    }
+
+    .hero-ornament:nth-child(3) {
+      width: 400px; height: 400px;
+      animation-delay: 4s;
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.03); opacity: 1; }
+    }
+
+    .hero-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      color: var(--parchment);
+      line-height: 1.05;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.6s forwards;
+    }
+
+    .hero-title span {
+      display: block;
+      color: var(--gold-light);
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.8rem, 4vw, 3.5rem);
+      letter-spacing: 0.1em;
+    }
+
+    .hero-divider {
+      margin: 2.5rem auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.9s forwards;
+    }
+
+    .hero-divider-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .hero-divider-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--parchment-deep);
+      line-height: 1.8;
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeUp 1.2s 1.1s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--parchment);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 0.9rem 2.5rem;
+      transition: all 0.4s;
+      opacity: 0;
+      animation: fadeUp 1.2s 1.4s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1.2s 1.8s forwards;
+    }
+
+    .scroll-indicator span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(180deg, var(--gold), transparent);
+      animation: scroll-drop 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-drop {
+      0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ── SECTIONS COMMON ───────────────── */
+    section {
+      position: relative;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── INTRO BAND ────────────────────── */
+    #intro {
+      background: var(--parchment);
+      padding: 7rem 0;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      gap: 0 4rem;
+      align-items: start;
+    }
+
+    .intro-divider-v {
+      background: linear-gradient(180deg, transparent, var(--parchment-deep), transparent);
+    }
+
+    .intro-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1.2rem;
+    }
+
+    .intro-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: var(--brown);
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+    }
+
+    .intro-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #3a2010;
+    }
+
+    .intro-body p + p { margin-top: 1rem; }
+
+    .intro-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--rust);
+      line-height: 1.6;
+      border-left: 3px solid var(--gold);
+      padding-left: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    /* ── FLIPBOOK ──────────────────────── */
+    #kitap {
+      background: var(--ink);
+      padding: 7rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--parchment);
+      line-height: 1.2;
+    }
+
+    .section-ornament {
+      margin: 1.5rem auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .orn-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+
+    .orn-line.rev { background: linear-gradient(270deg, transparent, var(--gold)); }
+
+    .orn-diamond {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .flipbook-frame {
+      position: relative;
+      border: 1px solid rgba(184,137,58,0.3);
+      padding: 1.5rem;
+      background: rgba(28,15,6,0.6);
+    }
+
+    .flipbook-frame::before, .flipbook-frame::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+
+    .flipbook-frame::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+
+    .flipbook-frame::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .flipbook-wrap {
+      position: relative;
+      padding-top: max(60%, 360px);
+      width: 100%;
+      height: 0;
+    }
+
+    .flipbook-wrap iframe {
+      position: absolute;
+      border: none;
+      width: 100%;
+      height: 100%;
+      left: 0; top: 0;
+    }
+
+    /* ── CHARACTERS ────────────────────── */
+    #karakterler {
+      background: var(--parchment);
+      padding: 7rem 0;
+    }
+
+    .chars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--parchment-deep);
+      margin-top: 3rem;
+    }
+
+    .char-card {
+      padding: 2.5rem 2rem;
+      background: var(--cream);
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .char-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .char-card:hover { background: var(--parchment); }
+    .char-card:hover::before { transform: scaleX(1); }
+
+    .char-initial {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--parchment-deep);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .char-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--brown);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .char-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #4a3020;
+      font-style: italic;
+    }
+
+    /* ── SCENES ────────────────────────── */
+    #sahneler {
+      background: #160c04;
+      padding: 7rem 0;
+    }
+
+    .scenes-intro {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 5rem;
+    }
+
+    .scenes-intro p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--parchment-deep);
+      line-height: 1.8;
+      margin-top: 1.5rem;
+    }
+
+    .scenes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5px;
+    }
+
+    .scene-card {
+      background: rgba(240, 226, 200, 0.04);
+      border: 1px solid rgba(184,137,58,0.12);
+      padding: 2.2rem 2rem;
+      cursor: pointer;
+      transition: all 0.35s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scene-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at top left, rgba(184,137,58,0.07), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .scene-card:hover {
+      background: rgba(240, 226, 200, 0.07);
+      border-color: rgba(184,137,58,0.35);
+    }
+
+    .scene-card:hover::before { opacity: 1; }
+
+    .scene-num {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .scene-num::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(184,137,58,0.25);
+    }
+
+    .scene-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--parchment);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .scene-excerpt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--parchment-deep);
+      line-height: 1.7;
+    }
+
+    .scene-expand-btn {
+      margin-top: 1.2rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.3s;
+      padding: 0;
+    }
+
+    .scene-expand-btn:hover { gap: 0.9rem; }
+
+    .scene-expand-btn svg {
+      transition: transform 0.3s;
+    }
+
+    .scene-card.expanded .scene-expand-btn svg {
+      transform: rotate(180deg);
+    }
+
+    .scene-full {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+    }
+
+    .scene-card.expanded .scene-full {
+      max-height: 800px;
+    }
+
+    .scene-full-inner {
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(184,137,58,0.2);
+      margin-top: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--parchment-dark);
+    }
+
+    .scene-full-inner p + p { margin-top: 1rem; }
+
+    .scene-dialogue {
+      border-left: 2px solid rgba(184,137,58,0.4);
+      padding-left: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+      color: var(--parchment);
+    }
+
+    .scene-dialogue strong {
+      font-style: normal;
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    /* ── ABOUT PROJECT ─────────────────── */
+    #proje {
+      background: var(--parchment-dark);
+      padding: 7rem 0;
+    }
+
+    .proje-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .proje-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      line-height: 1.9;
+      color: #3a2010;
+      margin-top: 2.5rem;
+    }
+
+    .proje-body p + p { margin-top: 1.2rem; }
+
+    .proje-badge {
+      display: inline-block;
+      margin-top: 3rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--brown);
+      border: 1px solid var(--parchment-deep);
+      padding: 0.8rem 2rem;
+    }
+
+    /* ── FOOTER ────────────────────────── */
+    footer {
+      background: var(--ink);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(184,137,58,0.15);
+    }
+
+    footer p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: rgba(240,226,200,0.4);
+    }
+
+    footer .footer-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-style: normal;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    /* ── ANIMATIONS ────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ────────────────────── */
+    @media (max-width: 768px) {
+      .intro-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem 0;
+      }
+      .intro-divider-v { display: none; }
+      .scenes-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 1.2rem; }
+      .nav-links li:nth-child(n+3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-brand">Ferhat &amp; Şirin</span>
+    <ul class="nav-links">
+      <li><a href="#intro">Hikaye</a></li>
+      <li><a href="#kitap">Kitap</a></li>
+      <li><a href="#sahneler">Sahneler</a></li>
+      <li><a href="#proje">Proje</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-ornament"></div>
+    <div class="hero-ornament"></div>
+    <div class="hero-ornament"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Bir Türk Efsanesi · Yapay Zekayla Çizgi Roman</p>
+      <h1 class="hero-title">
+        Ferhat ile Şirin
+        <span>Taştan Daha Sert, Sevgiden Daha Yumuşak</span>
+      </h1>
+      <div class="hero-divider">
+        <div class="hero-divider-line"></div>
+        <div class="hero-divider-diamond"></div>
+        <div class="hero-divider-line"></div>
+      </div>
+      <p class="hero-subtitle">
+        Asırlar öncesinden gelen bir aşk destanı; yapay zekanın fırçasıyla yeniden doğuyor.
+        Taş, çizgi ve sözcükle örülmüş bu hikayede aşk hâlâ kazıyor, hâlâ akıyor.
+      </p>
+      <a href="#kitap" class="hero-cta">Kitabı Aç</a>
+    </div>
+    <div class="scroll-indicator">
+      <span>Aşağı Kaydır</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section id="intro">
+    <div class="section-inner">
+      <div class="intro-grid">
+        <div class="reveal">
+          <p class="intro-label">Efsane</p>
+          <h2 class="intro-heading">Bir Nakkaşın Yüzyıllık Aşkı</h2>
+          <div class="intro-body">
+            <p>Ferhat ile Şirin, Türk ve Fars edebiyatının en derin köklerine uzanan kadim bir aşk destanıdır. Yüzyıllar boyunca divan şairleri, halk ozanları ve tiyatro yazarları bu masalı defalarca kaleme almış; her nesil onu kendi acısıyla yeniden doğurmuştur.</p>
+            <p>Hikayenin özünde çaresiz ama inatçı bir gerçek yatar: Gerçek aşk, imkânsızlıkla büyür. Ferhat bir dağı delmeyi göze alır; çünkü sevginin ağırlığı, kayadan daha serttir.</p>
+          </div>
+          <blockquote class="intro-quote">
+            "Su geldi. Şehir içti. Ve iki genç, bir daha içmedi."
+          </blockquote>
+        </div>
+
+        <div class="intro-divider-v"></div>
+
+        <div class="reveal" style="transition-delay: 0.2s;">
+          <p class="intro-label">Proje</p>
+          <h2 class="intro-heading">Yapay Zeka ve Edebiyat Buluşunca</h2>
+          <div class="intro-body">
+            <p>Bu proje, kadim bir destanı modern araçlarla yeniden yorumlamayı deniyor. Yapay zeka destekli görüntü üretimi ve senaryo yazımı aracılığıyla Ferhat'ın külüngü, Şirin'in bakışları ve Mehmene Banu'nun soğuk tahtı çizgi roman panellerine dönüşüyor.</p>
+            <p>Yirmi sahnelik bu senaryo; panel betimlemeleri, karakter görsel yönergeleri ve diyaloglarla tam bir çizgi roman formatında hazırlandı. Her sahne, metin ile görselin kesiştiği noktada duruyor: ne tamamen edebiyat, ne tamamen resim — ikisi birden.</p>
+            <p>Çizginin içinde hâlâ o eski hikaye var. Taş tozu ve aşk.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLIPBOOK -->
+  <section id="kitap">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Dijital Kitap</span>
+        <h2 class="section-title">Çizgi Romanı Oku</h2>
+        <div class="section-ornament">
+          <div class="orn-line rev"></div>
+          <div class="orn-diamond"></div>
+          <div class="orn-line"></div>
+        </div>
+      </div>
+      <div class="flipbook-frame reveal">
+        <div class="flipbook-wrap">
+          <iframe
+            src="https://online.fliphtml5.com/mddkx/fbrl/"
+            title="Ferhat ile Şirin Çizgi Roman"
+            seamless="seamless"
+            scrolling="no"
+            frameborder="0"
+            allowtransparency="true"
+            allowfullscreen="true"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="karakterler">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Dramatis Personae</span>
+        <h2 class="section-title" style="color: var(--brown);">Kahramanlar</h2>
+        <div class="section-ornament">
+          <div class="orn-line rev" style="background: linear-gradient(90deg, transparent, var(--parchment-deep));"></div>
+          <div class="orn-diamond" style="background: var(--rust);"></div>
+          <div class="orn-line" style="background: linear-gradient(270deg, transparent, var(--parchment-deep));"></div>
+        </div>
+      </div>
+      <div class="chars-grid reveal">
+        <div class="char-card">
+          <div class="char-initial">F</div>
+          <div class="char-name">Ferhat</div>
+          <p class="char-desc">Elleri taş yontan, kalbi şiir yazan bir nakkaş. Bakışlarında hem derin bir hüzün hem de söndürülemeyen bir kor taşır. Sevgisi; sabır, inat ve külüngün çeliğinden dokunmuştur.</p>
+        </div>
+        <div class="char-card">
+          <div class="char-initial">Ş</div>
+          <div class="char-name">Şirin</div>
+          <p class="char-desc">Meraklı ve cesur bir genç kız. Ela gözlerinin içinde ışık vardır; bu ışık, sarayın soğuk duvarlarının arasında bile söner gibi yapmaz. Ferhat'ı seçmek, onun için tüm dünyayı seçmek demektir.</p>
+        </div>
+        <div class="char-card">
+          <div class="char-initial">M</div>
+          <div class="char-name">Mehmene Banu</div>
+          <p class="char-desc">Güçlü, kararlı, kırılgan. Kız kardeşini dünyanın gözünden saklamak ister; ama kendi eliyle kurduğu duvar, hem onları hem kendini hapseder. Kötü değildir — sadece korkulu.</p>
+        </div>
+        <div class="char-card">
+          <div class="char-initial">H</div>
+          <div class="char-name">Hürmüz Şah</div>
+          <p class="char-desc">Aslanları boyun eğdiren bir adamı gördüğünde, onun sıradan biri olmadığını anlar. Adil, açık kalpli bir hükümdar. Ferhat'ın yanında durur; çünkü gerçek güce saygı duyar.</p>
+        </div>
+        <div class="char-card">
+          <div class="char-initial">B</div>
+          <div class="char-name">Behzat</div>
+          <p class="char-desc">Ferhat'ın gözlerinin içine baktığında sanatı görür. Elleri pürüzlü, sözleri az ama ağırlıklıdır. "Saray insanı değiştirir" der oğluna — ve haklıdır.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENES -->
+  <section id="sahneler">
+    <div class="section-inner">
+      <div class="section-header reveal scenes-intro">
+        <span class="section-label">Yirmi Perde</span>
+        <h2 class="section-title">Sahneler</h2>
+        <div class="section-ornament">
+          <div class="orn-line rev"></div>
+          <div class="orn-diamond"></div>
+          <div class="orn-line"></div>
+        </div>
+        <p>Her sahne; görsel yönergeler, karakter anlatımı ve diyalogla örülü bir pano. Çizgi romanın metni aşağıda, okunaklı bir edebiyat formuyla sunuluyor.</p>
+      </div>
+
+      <div class="scenes-grid" id="scenesGrid">
+        <!-- Sahneler JS ile doldurulacak -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT -->
+  <section id="proje">
+    <div class="section-inner">
+      <div class="proje-inner reveal">
+        <div class="section-header">
+          <span class="section-label" style="color: var(--rust);">Hakkında</span>
+          <h2 class="section-title" style="color: var(--brown);">Bu Proje Nedir?</h2>
+          <div class="section-ornament">
+            <div class="orn-line rev" style="background: linear-gradient(90deg, transparent, var(--rust));"></div>
+            <div class="orn-diamond" style="background: var(--rust);"></div>
+            <div class="orn-line" style="background: linear-gradient(270deg, transparent, var(--rust));"></div>
+          </div>
+        </div>
+        <div class="proje-body">
+          <p>Bu çalışma, Türk klasik edebiyatının en köklü aşk destanlarından biri olan <em>Ferhat ile Şirin</em> hikayesini; yapay zeka teknolojileriyle birleştirerek yeni bir anlatı biçimine dönüştürmeyi amaçlamaktadır.</p>
+          <p>Yirmi sahnelik senaryo, çizgi roman formatına özgü panel betimlemeleri, görsel yönergeler ve diyaloglar içermektedir. Her sahne, yapay zeka görüntü üretim araçlarına (Midjourney, DALL·E, Stable Diffusion ve benzeri platformlar) yönelik olarak tasarlanmıştır.</p>
+          <p>Projenin temel sorusu şudur: <em>Asırlar öncesinden kalma bir aşk söylencesi, dijital çağın araçlarıyla nasıl yeniden nefes alabilir? Taş yontan ellerin izi, piksel piksele nasıl aktarılabilir?</em></p>
+          <p>Bu web sitesi, o sorunun hem sorusu hem de ilk cevabıdır.</p>
+        </div>
+        <div class="proje-badge">Edebiyat · Teknoloji · Sanat</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-title">Ferhat ile Şirin — Yapay Zekayla Çizgi Roman</span>
+    <p>Su hâlâ akıyor. Aşk hâlâ taş delmeye devam ediyor.</p>
+  </footer>
+
+  <script>
+    // ── SCENE DATA ───────────────────────────────────────────
+    const scenes = [
+      {
+        num: "Sahne I",
+        title: "Horasan'ın Kapıları",
+        excerpt: "Kırmızımsı toprak üzerinde uzanan kentin siluetinde, bir duvarın önünde taşa can veren bir adam vardır.",
+        full: `<p>Horasan'ın altın-turuncu gün batımında, kervansaray duvarına yaslanmış genç bir nakkaş elindeki ince fırçayla taşa bir geyik çiziyor. İsmi Ferhat'tır; elleri nasırlı, bakışları derin.</p>
+<p>Koşarak gelen bir çocuk, onu büyük bir haberle buluyor: Mehmene Banu'nun köşkü için nakkaş aranıyor. Ama Ferhat acele etmez.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Önce bu geyiğin gözünü bitireyim. Geyiğin gözü yarım kalırsa hüzünlü bakar hep."</div>
+<p>Sanat, çağrıdan önce gelir. Her zaman.</p>`
+      },
+      {
+        num: "Sahne II",
+        title: "Baba ile Oğul",
+        excerpt: "Atölyenin sıcak kandil ışığında, iki eli de boyalı iki insan arasında geçen bir söyleşi.",
+        full: `<p>Behzat, titrek kandil ışığında tahta oyarken oğlu içeri girer. Yaşlı ustanın gözü hep Ferhat'ın ellerindedir — boyalı parmaklar, nasırlı avuçlar.</p>
+<div class="scene-dialogue"><strong>Behzat:</strong> "Senin ellerinin taş duvarı değil, yıldız gökyüzünü süslemesi gerekiyor. Git oğlum. Ama unutma — saray, insanı değiştirir. Sen Ferhat kalacaksın."</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Ferhat kalacağım, baba. Söz."</div>
+<p>Behzat oğlunun ellerine bakıyor; bir şey söylemiyor. Bazen en ağır vedalar en sessiz olanlarıdır.</p>`
+      },
+      {
+        num: "Sahne III",
+        title: "Köşkün Kapısında",
+        excerpt: "Usta kuyruğunun sonunda, yere oturmuş taş üzerine çizikler yapan bir adam — çünkü kafası boş duramaz.",
+        full: `<p>Köşkün önünde onlarca usta sıra bekliyor. Ferhat sıranın en sonunda, tek başına, yere oturmuş; bulduğu taş parçasına karalamalar yapıyor.</p>
+<div class="scene-dialogue"><strong>Komşu usta:</strong> "Sıra beklerken resim mi yapıyorsun?"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Kafam boş durmaz."</div>
+<div class="scene-dialogue"><strong>Usta:</strong> "Saray nakkaşlığı zor işmiş. Yıllar önce bir adam hiç beğenilmeden kovulmuş."</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "O zaman daha iyi yaparım. Kovulsam da görmüş olurum."</div>
+<p>Kapı açılır. Muhafız seslenir: <em>"Behzat oğlu Ferhat!"</em></p>`
+      },
+      {
+        num: "Sahne IV",
+        title: "İlk Bakış",
+        excerpt: "Işığın sütunlar gibi düştüğü koridorda, iki kişi göz göze gelir — ve zaman duraksıyor.",
+        full: `<p>Yüksek tavanlı, görkemli bir koridor. Pencerelerden süzülen ışık, zemine uzun sütunlar çiziyor. Ferhat etrafındaki her köşeyi bir sanatçı gözüyle değerlendirirken balkonda bir kapı açılır.</p>
+<p>Şirin çıkar. Elinde kitap, başı önde — ve tam o anda Ferhat başını kaldırır. İki bakış kesişir.</p>
+<p>Şirin ürker. Kitabını kapatır. Ferhat gözlerini kaçırır. Saray görevlisi gelip onu alır ama Ferhat giderken bir kez daha balkona bakar — Şirin hâlâ orada duruyor, ve artık o da Ferhat'a bakıyor.</p>
+<p><em>Bazı anlar, gerçekleşmeden önce tamamlanmıştır zaten.</em></p>`
+      },
+      {
+        num: "Sahne V",
+        title: "Mehmene Banu ile Yüzleşme",
+        excerpt: "Taht salonunda soğuk bir ses, beklenen saygıyı almak yerine beklenmedik bir cevap bulur.",
+        full: `<p>Yüksek tahtta oturan Mehmene Banu, Ferhat'ı dik bakışlarıyla süzer. "İyiyi değil, eşsizi isterim," der. "Duvarlarım, gören herkesin nefesini kesmeli."</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Nefes kesilmesi için duvarın güzel olması yetmez, Hanım. İçindeki hikayenin gerçek olması gerekir."</div>
+<p>Banu'nun kaşı kalkar. Bu cevabı beklemiyordu.</p>
+<div class="scene-dialogue"><strong>Banu:</strong> "O hikayeyi sen mi yazacaksın?"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Duvarlar benden, hikaye sizden, Hanım."</div>
+<p>Vezir fısıldar: <em>"Cesur çocuk."</em> Banu'nun gözünde bir kıvılcım yanar — beğenmiştir, ama bunu belli etmez.</p>`
+      },
+      {
+        num: "Sahne VI",
+        title: "Fırça ve Taş",
+        excerpt: "Ağacın dalları neden bu kadar eğri? Çünkü rüzgara direniyor.",
+        full: `<p>Günler sonra. Köşkün inşaat alanında Ferhat çalışıyor; elleri taş tozu içinde, büyük bir duvara dev bir ağaç kabartması işliyor. Bir cariyesiyle geçen Şirin durur.</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Bu ağacın dalları neden bu kadar eğri?"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> *(fırçasını bırakmadan)* "Çünkü rüzgara direniyor. Dik duran ağaç değil, eğilip kırılmayan ağaç güçlüdür."</div>
+<p>Şirin bir şey anlamış gibi bakışları değişir.</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Bunu düşünerek mi yapıyorsun, yoksa ellerin kendiliğinden mi?"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> *(ilk kez Şirin'e dönerek)* "Bilmiyorum. Belki ikisi birden."</div>`
+      },
+      {
+        num: "Sahne VII",
+        title: "Gizli Buluşma",
+        excerpt: "Bahçenin arka köşesinde, leylak ağaçlarının altında, gece söylenmesi gereken sözler.",
+        full: `<p>Akşam. Bahçenin arka köşesinde bir havuzun başında iki siluet. Leylak ağaçlarının arasından yıldızlar görünüyor.</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Ablam seni sarayda tutmak istiyor. Ben de... ben de istemiyorum ki gitsin diye isteyebilir miyim?"</div>
+<p>Ferhat sessizce güler. Bu onun ilk gülüşüdür — sıcak, gerçek, nadir.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "İsteyebilirsin."</div>
+<div class="scene-dialogue"><strong>Şirin:</strong> "O zaman istiyorum. Gitme."</div>
+<p>Rüzgarda leylaklar sallanır. Ferhat bir şey söylemeye açılır ama Şirin parmağını dudağına götürür:</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Söyleme. Şimdi değil. Ablamın casusları her yerde."</div>`
+      },
+      {
+        num: "Sahne VIII",
+        title: "Mehmene Banu'nun Öfkesi",
+        excerpt: "Bir cariyenin titreyerek söylediği haber, sarayın havasını değiştirir.",
+        full: `<p>Mehmene Banu dizüstü çökmüş bir cariyeyi dinliyor. Bahçe buluşması gün yüzüne çıkmıştır.</p>
+<p>Banu pencereye yürür. Avluda Ferhat taş yontuyor — habersiz, sakin, kendinden emin.</p>
+<p>Banu'nun içinden geçen düşünce sessizdir ama acımasız: <em>"Kız kardeşimi bir taş ustasına mı vereyim? Asla."</em></p>
+<p>Vezire döner:</p>
+<div class="scene-dialogue"><strong>Banu:</strong> "Ferhat'ı bu gece zindana atın."</div>`
+      },
+      {
+        num: "Sahne IX",
+        title: "Zindan",
+        excerpt: "Nemli duvarlara, parmakla çizilmiş bir yüz. Ay ışığının tek bir çizgi olarak süzüldüğü o karanlıkta.",
+        full: `<p>Zindan soğuk ve nemlidir. Tek pencereden sızan ay ışığı, yerde ince bir çizgi çiziyor. Ferhat duvara yaslanmış; parmağıyla yerdeki toprağa Şirin'in yüzünü çiziyor.</p>
+<p>Sonra cebinden kağıt çıkarır, yazar:</p>
+<div class="scene-dialogue"><em>"Şirin, taşın içinde bile senin suretini görüyorum. Duvarlar beni hapsetmiş ama sen aklımdaysan hürrüm ben. Dışarı çıktığımda sana söyleyeceğim: Seninle her şeye katlanmaya razıyım."</em></div>
+<p>Kapı gıcırdar. Bir cariye, kapının altından küçük bir ekmek parçası iter. Şirin'den mesaj bekliyor.</p>
+<div class="scene-dialogue"><strong>Cariye:</strong> *(fısıltıyla)* "Şirin Hanım'dan. Mektubunuzu bekliyorum."</div>`
+      },
+      {
+        num: "Sahne X",
+        title: "Rüya ve Özgürlük",
+        excerpt: "Geceleri rüya gören sadece âşıklar değil — kimi zaman zalimler de görür.",
+        full: `<p>Sarayın içi, gece. Mehmene Banu ter içinde uyandı. Rüyasında kırmızı bulutlar, yanan bir ateş ve Ferhat'ın silueti vardı — anlamsız ama dehşet verici bir his.</p>
+<div class="scene-dialogue"><strong>Banu:</strong> "Ferhat'ı serbest bırakın. Şimdi. Bu gece."</div>
+<div class="scene-dialogue"><strong>Hizmetçi:</strong> "Ama Hanım—"</div>
+<div class="scene-dialogue"><strong>Banu:</strong> "Ve ona bin altın verin. Uzak gitsin."</div>
+<p>Zindan kapısı açılır. Ferhat ay ışığına gözlerini kırpıştırarak çıkar. Elinde altın kesesi — ama aklı başka bir yerde.</p>`
+      },
+      {
+        num: "Sahne XI",
+        title: "Dağlara Çekilme",
+        excerpt: "Altınları yolda köylülere dağıtan adam, şimdi eli boş ama yüzü hafif.",
+        full: `<p>Ferhat yola düşüyor. Sırtında küçük bir bohça, elinde fırça seti. Saraydan aldığı altınları köylülere dağıtmış; artık eli boş ama ayakları özgür.</p>
+<div class="scene-dialogue"><strong>Köylü ihtiyar:</strong> "Oğlum, bu dağlarda yalnız ne ararsın?"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Kendimi, ihtiyar."</div>
+<div class="scene-dialogue"><strong>İhtiyar:</strong> "Kendini mi? Ben ömrüm boyunca aradım, bulamadım."</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Belki aramak yeterlidir."</div>
+<p>Bir mağaranın ağzında durur. Eliyle taşa dokunur ve yavaşça Şirin'in siluetini çizmeye başlar. Dağlar onu kabullendi. Aslanlar yolunu açtı. Kartallar başının üstünde döndü. Ama Şirin'den uzak olmak, yalnızlığın kendisiydi.</p>`
+      },
+      {
+        num: "Sahne XII",
+        title: "Hürmüz Şah'ın Karşılaşması",
+        excerpt: "Ava çıkan bir kafile, bir kayanın üstünde gözleri kapalı oturan adama ve onun yanındaki üç aslana rastlar.",
+        full: `<p>Hürmüz Şah ve maiyeti ormanlık bir alanda ava çıkmış. Kafile birden durur. Önlerinde, bir kayanın üstünde gözleri kapalı, ağıt gibi bir ezgi mırıldanan biri var. Yanında üç aslan sessizce uzanmış.</p>
+<p>Adamların elleri silaha gider — Şah bir işaret yapar, dur.</p>
+<div class="scene-dialogue"><strong>Şah:</strong> *(fısıltıyla)* "Aslanlarla bu kadar rahat kim bu adam?"</div>
+<p>Ferhat gözlerini açar. Kafileye bakar — ne korku, ne şaşkınlık. Sadece dingin bir bakış.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Gözaltı mı, yoksa sohbet mi istiyorsunuz?"</div>
+<div class="scene-dialogue"><strong>Şah:</strong> *(gülerek)* "İkincisi. Anlat bakalım."</div>`
+      },
+      {
+        num: "Sahne XIII",
+        title: "Söz Verildi",
+        excerpt: "Bir hükümdar, bir nakkaşa verilen sözün ağırlığını omuzluyor.",
+        full: `<p>Şah'ın çadırında Ferhat her şeyi anlatır. Zindan, mağara, Şirin, her şey. Şah sessizce dinler; yüzü paneller boyunca değişir.</p>
+<div class="scene-dialogue"><strong>Şah:</strong> "Eğer Şirin'i istiyorsan resmi yoldan istenecek. Bu sefer ben isteyeceğim. Sana söz veriyorum."</div>
+<p>Ferhat inanamıyor. Sonra derin bir nefes alır.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Neden yapıyorsunuz bunu, Şahım?"</div>
+<div class="scene-dialogue"><strong>Şah:</strong> "Çünkü aslanların sana boyun eğdiğini gördüm. Tanrı sana bir şey vermiş — o şeyin heba olmasını istemiyorum."</div>`
+      },
+      {
+        num: "Sahne XIV",
+        title: "İmkânsız Görev",
+        excerpt: "Şahinkaya dağından şehre su akıtmak. Tek başına. Bu bir şarttır — aslında bir hayır cevabıdır.",
+        full: `<p>Şah'ın elçisi, Banu'nun taht salonunda evlilik teklifini iletir. Banu hiç kımıldamaz. Sonra yavaşça güler — tehlikeli bir gülüş.</p>
+<div class="scene-dialogue"><strong>Banu:</strong> "Ferhat istiyorsa, yapsın. Şahinkaya dağından şehre su akıtsın. Tek başına. Suyu getirirse, Şirin'i veririm."</div>
+<p>Elçi döner, Şah dinler. Yüzü sertleşir. Ama Ferhat ayağa kalkar:</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Ne zaman başlayabilirim?"</div>
+<div class="scene-dialogue"><strong>Şah:</strong> "Ferhat, o dağ granit. İnsan eliyle—"</div>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "İnsan eli değil — Şirin'e âşık bir el. Fark var."</div>`
+      },
+      {
+        num: "Sahne XV",
+        title: "Külüng ve Dağ",
+        excerpt: "Her vuruş bir isimle başlar. Şirin. Şirin. Şirin.",
+        full: `<p>Şahinkaya dağının eteğinde, dev kayaların önünde küçük bir insan figürü. Elinde ağır bir kazma — külüng. Güneş tepede. Ferhat'ın gölgesi küçük, kayaların gölgesi devasa.</p>
+<div class="scene-dialogue"><em>Her vuruşu Şirin'in adına vuruyorum.</em></div>
+<p>Vurdu. Kayadan kıvılcım çıktı. Sabah vuruyor. Öğle vuruyor. Akşam vuruyor. Uyuyor. Sabah tekrar başlıyor. Elleri kanlı, avuçları yara içinde — ama gözler durmadan bakıyor ileriye.</p>
+<p>Uzaktan izleyen yaşlı bir kadın fısıldar: <em>"Deli mi bu adam?"</em> Yanındaki genç köylü cevaplar: <em>"Hayır nine. Âşık."</em></p>
+<p>Sonunda kayadan ilk çatlak açılır. Ferhat duraksıyor — el titriyor — sonra güçlü bir sesle güler.</p>`
+      },
+      {
+        num: "Sahne XVI",
+        title: "Şirin'in Bekleyişi",
+        excerpt: "Pencere kenarından dağları izlemek. Her gece rüyada o sesin yankısını duymak.",
+        full: `<p>Saray penceresinden uzaklardaki dağlara bakan Şirin. Parmakları pencerenin kenarını sıkıca tutuyor.</p>
+<div class="scene-dialogue"><strong>Selvinaz:</strong> "Haber aldım Şirin Hanım. Ferhat hâlâ vuruyor. Üç aydır."</div>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Biliyor muyum sanki... Her gece rüyamda o sesin yankısını duyuyorum."</div>
+<p>Şirin masaya oturur. Bir kağıt alır, yazar. İçinden geçen tek cümle şudur: <em>"Ferhat, dur. Lütfen dur. Sen benim için hayatta olmalısın — sadece benimle değil."</em></p>
+<p>Kağıdı Selvinaz'a verir:</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> "Götür. Ama ablamın casusları görmesin."</div>`
+      },
+      {
+        num: "Sahne XVII",
+        title: "Mehmene Banu'nun Planı",
+        excerpt: "Mum ışığında, eğik büğük bir cadıyla yapılan alçak sesli bir konuşma.",
+        full: `<p>Sarayın alt katında karanlık bir oda. Mehmene Banu ve yaşlı, eğri büğrü bir cadı karşı karşıya. Banu'nun yüzü mum ışığından aşağıdan aydınlanmış.</p>
+<div class="scene-dialogue"><strong>Banu:</strong> "Dağı neredeyse deldi. Anlıyor musun? Deldi."</div>
+<div class="scene-dialogue"><strong>Cadı:</strong> *(dişsiz gülüşüyle)* "Ne istiyorsunuz, Hanım?"</div>
+<div class="scene-dialogue"><strong>Banu:</strong> "Git. Ona söyle. Şirin öldü. Mektup yok, belge yok — sadece yalan. Ama inandırıcı bir yalan."</div>
+<p>Cadı kapıdan çıkarken Banu mumu söndürür. Karanlıkta yalnız kalır. Sesi duyulur — sadece bir fısıltı:</p>
+<div class="scene-dialogue"><strong>Banu:</strong> <em>"Affet beni, Şirin..."</em></div>`
+      },
+      {
+        num: "Sahne XVIII",
+        title: "Yalanın Sonu",
+        excerpt: "İlk su damlası kanaldan sızıyor. Ferhat eğilip o damlaya bakıyor. Tam o anda arkasından ses geliyor.",
+        full: `<p>Dağın yarısı delinmiş. Ferhat'ın kazdığı kanaldan ilk su damlası sızıyor. Adam eğilip o damlaya bakıyor — gözleri parlıyor.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> *(fısıltıyla)* "Geliyor... Sözümü tuttum, Şirin."</div>
+<p>Arkasından ses gelir. Cadı orada — kucağında küçük bir kap, içinde tatlı.</p>
+<div class="scene-dialogue"><strong>Cadı:</strong> "Dur biraz, yiğit. Sana haber getirdim. Şirin... öldü. Birkaç gün önce."</div>
+<p>Ferhat donar. Dünya yerinden oynamış gibi bir yüz. Dudakları kımıldıyor, ses çıkmıyor.</p>
+<div class="scene-dialogue"><strong>Ferhat:</strong> "Yalan söylüyorsun."</div>
+<div class="scene-dialogue"><strong>Cadı:</strong> "Keşke yalan olsaydı, oğlum."</div>
+<p>Ferhat'ın elinden külüng düşüyor. Yavaşça diz çöküyor. Sonra gökyüzüne bakıyor — gözleri boş, kırılmış. Ve tek bir kelime çıkıyor içinden, çığlık gibi ama sessiz: <strong>Şirin!</strong></p>
+<p>Külüngü havaya fırlatıyor. Dönerek inen demir — ve Ferhat yıkılıyor.</p>`
+      },
+      {
+        num: "Sahne XIX",
+        title: "Şirin'in Koşuşu",
+        excerpt: "Pelerin bile giymeden. Koridorlar, kapılar, bahçe, surlar — hepsi geride kalıyor.",
+        full: `<p>Selvinaz koşarak Şirin'e geliyor — nefes nefese, ağlamaklı. Şirin'in yüzü bir anda donuyor. Sonra bir şey kırılıyor içinde.</p>
+<p>Şirin fırlıyor. Pelerin bile giymeden koşuyor. Koridorlar, kapılar, bahçe, surlar — hepsi hızla geride kalıyor. Köylüler bakıyor, muhafızlar şaşırıyor, kimse durduramıyor.</p>
+<p>Dağın eteğine geliyor. Gözleriyle arıyor. Ve görüyor.</p>
+<p>Ferhat kayaların yanında yatıyor. Altından akan su — ilk defa gerçekten akan su — onun yanından geçerek şehre doğru ilerliyor.</p>
+<div class="scene-dialogue"><strong>Şirin:</strong> *(diz çökerek)* "Ferhat... Yaptın. Yaptın işte. Su geldi. Ama sen... sen neden gittin?"</div>`
+      },
+      {
+        num: "Sahne XX",
+        title: "İki Gül, Bir Diken",
+        excerpt: "Su geldi. Şehir içti. Ve iki genç, bir daha içmedi.",
+        full: `<p>Sessiz, ağır bir son. Dağın eteklerinde, kanalın hemen yanında iki mezar yan yana. Aralarında dar bir mesafe.</p>
+<p>Köylüler uzakta sessizce izliyor. Hürmüz Şah başını önüne eğmiş. Mehmene Banu uzakta, tek başına — yüzü görünmüyor, sadece eğik omuzları.</p>
+<p>Kanaldan akan su neşeyle çağıl çağıl akıyor. O neşeli sesi duyunca, insan daha da mahzun olur.</p>
+<p>Sonra ilkbahar geliyor. İki mezarın üstünden iki gül filizi baş veriyor — biri kırmızı, biri beyaz. Rüzgarla birbirine doğru eğiliyorlar. Ama tam aralarında, ince bir kara çalı fidiesi de çıkmış.</p>
+<div class="scene-dialogue"><em>"Her bahar iki gül birbirine uzanır. Her bahar bir diken araya girer. Derler ki o diken cadının ruhudur. Derler ki o güller Ferhat ile Şirin'dir. Derler ki su hâlâ akıyor — Ferhat'ın deldiği kanalda, durmuyor."</em></div>`
+      }
+    ];
+
+    // ── RENDER SCENES ─────────────────────────────────────────
+    const grid = document.getElementById('scenesGrid');
+
+    scenes.forEach((scene, i) => {
+      const card = document.createElement('div');
+      card.className = 'scene-card reveal';
+      card.style.transitionDelay = `${(i % 3) * 0.1}s`;
+      card.innerHTML = `
+        <div class="scene-num">${scene.num}</div>
+        <div class="scene-title">${scene.title}</div>
+        <p class="scene-excerpt">${scene.excerpt}</p>
+        <button class="scene-expand-btn" aria-label="Sahneyi oku">
+          Sahneyi Oku
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="2,4 6,8 10,4"/>
+          </svg>
+        </button>
+        <div class="scene-full">
+          <div class="scene-full-inner">${scene.full}</div>
+        </div>
+      `;
+      card.querySelector('.scene-expand-btn').addEventListener('click', () => {
+        card.classList.toggle('expanded');
+        const btn = card.querySelector('.scene-expand-btn');
+        btn.childNodes[0].textContent = card.classList.contains('expanded') ? 'Kapat ' : 'Sahneyi Oku ';
+      });
+      grid.appendChild(card);
+    });
+
+    // ── SCROLL REVEAL ─────────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
